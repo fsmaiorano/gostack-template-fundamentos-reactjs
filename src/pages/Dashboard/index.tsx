@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { format, formatDistance, formatRelative, subDays } from 'date-fns';
 
 import income from '../../assets/income.svg';
 import outcome from '../../assets/outcome.svg';
@@ -41,8 +42,16 @@ const Dashboard: React.FC = () => {
       });
     }
 
+    async function handleTransactions(): Promise<void> {
+      // const x = transactions.map((t: Transaction) => {
+      //   t.formattedValue = 'a';
+      // });
+      // setTransactions(x);
+    }
+
     loadTransactions();
-  }, []);
+    handleTransactions();
+  }, [transactions]);
 
   return (
     <>
@@ -56,7 +65,6 @@ const Dashboard: React.FC = () => {
             </header>
             {balance ? (
               <h1 data-testid="balance-income">
-                <span>R$ </span>
                 {balance.income
                   ? formatValue(parseInt(balance.income, 10))
                   : '0.00'}
@@ -72,8 +80,7 @@ const Dashboard: React.FC = () => {
             </header>
             {balance ? (
               <h1 data-testid="balance-outcome">
-                <span>R$ </span>
-                {balance.income
+                {balance.outcome
                   ? formatValue(parseInt(balance.outcome, 10))
                   : '0.00'}
               </h1>
@@ -88,8 +95,10 @@ const Dashboard: React.FC = () => {
             </header>
             {balance ? (
               <h1 data-testid="balance-total">
-                <span>R$ </span>
-                {balance.total}
+                {' '}
+                {balance.total
+                  ? formatValue(parseInt(balance.total, 10))
+                  : '0.00'}
               </h1>
             ) : (
               <p>Carregando...</p>
