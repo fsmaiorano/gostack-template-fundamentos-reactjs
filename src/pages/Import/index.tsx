@@ -28,7 +28,7 @@ const Import: React.FC = () => {
         async (upload: FileProps): Promise<void> => {
           const formData = new FormData();
           formData.append('file', upload.file);
-          const response = await api.post('/transactions/import', formData);
+          await api.post('/transactions/import', formData);
         },
       );
     } catch (err) {

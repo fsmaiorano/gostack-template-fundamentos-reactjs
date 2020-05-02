@@ -78,7 +78,7 @@ const Dashboard: React.FC = () => {
             {balance ? (
               <h1 data-testid="balance-outcome">
                 {balance.outcome
-                  ? formatValue(parseInt(balance.outcome, 10))
+                  ? `-${formatValue(parseInt(balance.outcome, 10))}`
                   : '0.00'}
               </h1>
             ) : (
@@ -121,7 +121,9 @@ const Dashboard: React.FC = () => {
                     <td className="title">{transaction.title}</td>
                     <td className={transaction.type}>
                       {transaction.value
-                        ? formatValue(transaction.value)
+                        ? transaction.type === 'outcome'
+                          ? `- ${formatValue(transaction.value)}`
+                          : formatValue(transaction.value)
                         : '0.00'}
                     </td>
                     <td>{transaction.category.title}</td>
