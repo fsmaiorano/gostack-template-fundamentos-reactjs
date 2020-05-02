@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { format, formatDistance, formatRelative, subDays } from 'date-fns';
+import { format } from 'date-fns';
 
 import income from '../../assets/income.svg';
 import outcome from '../../assets/outcome.svg';
@@ -37,21 +37,18 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     async function loadTransactions(): Promise<void> {
       api.get(`/transactions`).then(response => {
+        response.data.transactions.forEach((t: Transaction) => {
+          t.formattedValue = formatValue(t.value);
+          t.formattedDate = format(new Date(t.created_at), 'dd/MM/yyyy');
+        });
+
         setTransactions(response.data.transactions);
         setBalance(response.data.balance);
       });
     }
 
-    async function handleTransactions(): Promise<void> {
-      // const x = transactions.map((t: Transaction) => {
-      //   t.formattedValue = 'a';
-      // });
-      // setTransactions(x);
-    }
-
     loadTransactions();
-    handleTransactions();
-  }, [transactions]);
+  }, []);
 
   return (
     <>
@@ -117,10 +114,10 @@ const Dashboard: React.FC = () => {
               </tr>
             </thead>
 
-            {transactions ? (
-              transactions.map(transaction => (
-                <tbody>
-                  <tr>
+            <tbody>
+              {transactions ? (
+                transactions.map(transaction => (
+                  <tr key={transaction.id}>
                     <td className="title">{transaction.title}</td>
                     <td className={transaction.type}>
                       {transaction.value
@@ -128,13 +125,13 @@ const Dashboard: React.FC = () => {
                         : '0.00'}
                     </td>
                     <td>{transaction.category.title}</td>
-                    <td>{transaction.created_at}</td>
+                    <td>{transaction.formattedDate}</td>
                   </tr>
-                </tbody>
-              ))
-            ) : (
-              <p>Carregando...</p>
-            )}
+                ))
+              ) : (
+                <p>Carregando...</p>
+              )}
+            </tbody>
           </table>
         </TableContainer>
       </Container>
